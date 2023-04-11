@@ -94,43 +94,6 @@ class _HomePageState extends State<HomePage>
                     color: Colors.white),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: double.infinity,
-                height: 40.h,
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.black),
-                  borderRadius: BorderRadius.all(Radius.circular(30.sp)),
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                ),
-                child: TextFormField(
-                  style: TextStyle(fontSize: 16.sp),
-                  maxLines: 1,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(10.w, 15.h, 10.w, 15.h),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  showCursor: true,
-                  cursorColor: Colors.black,
-                  autofocus: false,
-                  onChanged: (value) {
-                    setState(() {});
-                  },
-                ),
-              ),
-            ),
             TabBar(
               controller: tabController,
               labelColor: Colors.black,
