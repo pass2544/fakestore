@@ -5,24 +5,25 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:project/pages/homepage.dart';
-import 'package:project/pages/register.dart';
 
 import 'model/user_model.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController password2Controller = TextEditingController();
   String name = '';
   String password = '';
+  String password2 = '';
   bool invisible = true;
+  bool invisible2 = true;
   final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   final Future<FirebaseApp> firebase = Firebase.initializeApp();
   UserModel userModel = UserModel();
@@ -48,11 +49,23 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: [
                     Center(
-                      child: Text("Fake Store",
-                          style: TextStyle(
-                              fontSize: 40.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: Icon(Icons.keyboard_arrow_left,
+                                  size: 40.sp, color: Colors.white)),
+                          Text("Fake Store",
+                              style: TextStyle(
+                                  fontSize: 40.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                          SizedBox(
+                            width: 35.w,
+                          )
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: 15.h,
@@ -70,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
                             SizedBox(
                               height: 50.h,
-                              child: Text("Login",
+                              child: Text("Registor",
                                   style: TextStyle(
                                       fontSize: 30.sp,
                                       fontWeight: FontWeight.bold,
@@ -82,82 +95,52 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             passwordTextField(),
                             SizedBox(
+                              height: 20.h,
+                            ),
+                            passwordTextFieldAgain(),
+                            SizedBox(
                               height: 60.h,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                SizedBox(
-                                  width: 150.w,
-                                  child: ElevatedButton.icon(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.blue),
-                                      onPressed: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RegisterPage(),
-                                          )),
-                                      icon: const FaIcon(
-                                        FontAwesomeIcons.registered,
-                                        color:
-                                            Color.fromARGB(255, 255, 255, 255),
-                                        size: 20,
-                                      ),
-                                      label: Text(
-                                        "Registor",
-                                        style: TextStyle(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.bold),
-                                      )),
-                                ),
-                                SizedBox(
-                                  width: 150.w,
-                                  child: ElevatedButton.icon(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green),
-                                      onPressed: name == '' || password == ''
-                                          ? null
-                                          : () async {
-                                              if (globalFormKey.currentState!
-                                                  .validate()) {
+                            SizedBox(
+                              width: 150.w,
+                              child: ElevatedButton.icon(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green),
+                                  onPressed: name == '' ||
+                                          password == '' ||
+                                          password2 == ''
+                                      ? null
+                                      : () {
+                                          if (globalFormKey.currentState!
+                                              .validate()) {
+                                            globalFormKey.currentState!.save();
+                                            if (userModel.password ==
+                                                userModel.password2) {
+                                              try {
+                                                FirebaseAuth.instance
+                                                    .createUserWithEmailAndPassword(
+                                                        email:
+                                                            userModel.username!,
+                                                        password: userModel
+                                                            .password!);
                                                 globalFormKey.currentState!
-                                                    .save();
-
-                                                try {
-                                                  await FirebaseAuth.instance
-                                                      .signInWithEmailAndPassword(
-                                                          email: userModel
-                                                              .username!,
-                                                          password: userModel
-                                                              .password!)
-                                                      .then((value) {
-                                                    globalFormKey.currentState!
-                                                        .reset();
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const HomePage(),
-                                                        ));
-                                                  });
-                                                } on FirebaseAuthException catch (e) {
-                                                  log("error");
-                                                }
+                                                    .reset();
+                                              } on FirebaseAuthException catch (e) {
+                                                log("${e.message}");
                                               }
-                                            },
-                                      icon: const Icon(
-                                        Icons.login,
-                                        size: 26,
-                                      ),
-                                      label: Text(
-                                        "Login",
-                                        style: TextStyle(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.bold),
-                                      )),
-                                ),
-                              ],
+                                            }
+                                          }
+                                        },
+                                  icon: const Icon(
+                                    Icons.login,
+                                    size: 26,
+                                  ),
+                                  label: Text(
+                                    "Register",
+                                    style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold),
+                                  )),
                             )
                           ],
                         ),
@@ -168,11 +151,70 @@ class _LoginPageState extends State<LoginPage> {
               )),
             );
           }
-
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         });
+  }
+
+  Widget passwordTextFieldAgain() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: TextFormField(
+        controller: password2Controller,
+        autofocus: true,
+        obscureText: invisible2,
+        onChanged: (String value) {
+          setState(() {
+            userModel.password2 = value;
+            password2 = value;
+          });
+        },
+        onSaved: (newValue) {
+          setState(() {
+            userModel.password2 = newValue!;
+            password2 = newValue;
+          });
+        },
+        maxLength: 10,
+        decoration: InputDecoration(
+          border: const UnderlineInputBorder(),
+          hintText: 'กรุณาระบุรหัสผ่านอีกรอบ',
+          icon: const FaIcon(
+            FontAwesomeIcons.lock,
+            color: Color.fromARGB(255, 20, 129, 219),
+          ),
+          counterText: "",
+          // ปุ่มเปิด / ปิด ดูรหัสผ่าน
+          suffixIcon: IconButton(
+            icon: invisible2 == true
+                ? const FaIcon(
+                    FontAwesomeIcons.eyeSlash,
+                    color: Color.fromARGB(255, 20, 129, 219),
+                    size: 20,
+                  )
+                : const FaIcon(
+                    FontAwesomeIcons.eye,
+                    color: Color.fromARGB(255, 20, 129, 219),
+                    size: 20,
+                  ),
+            onPressed: () {
+              setState(
+                () {
+                  if (invisible2 == true) {
+                    invisible2 = false;
+                  } else {
+                    invisible2 = true;
+                  }
+                },
+              );
+            },
+          ),
+
+          /* */
+        ),
+      ),
+    );
   }
 
   Widget passwordTextField() {

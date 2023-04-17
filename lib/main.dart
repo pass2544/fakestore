@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project/pages/homepage.dart';
+import 'package:project/pages/login.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
             fontFamily: 'Kanit',
           ),
-          home: const HomePage()),
+          home: const LoginPage()),
     );
   }
 }
